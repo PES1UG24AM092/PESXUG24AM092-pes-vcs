@@ -11,6 +11,9 @@
 #include <assert.h>
 #include <stdlib.h>
 
+// Declare the function so we can force a disk write for the screenshot
+int object_write(ObjectType type, const void *data, size_t len, ObjectID *id_out);
+
 void test_tree_roundtrip(void) {
     // Build a tree manually
     Tree original;
@@ -36,6 +39,12 @@ void test_tree_roundtrip(void) {
     assert(data != NULL);
     assert(len > 0);
     printf("Serialized tree: %zu bytes\n", len);
+
+    // --- ADDED FOR SCREENSHOT 2B ---
+    // Force the test to actually write this tree to the object store
+    ObjectID disk_id;
+    object_write(OBJ_TREE, data, len, &disk_id);
+    // -------------------------------
 
     // Parse back
     Tree parsed;
